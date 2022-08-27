@@ -74,25 +74,33 @@ class View: UIViewController {
         return tigerView
     }()
     
-    private let lyricsScrollView: UIScrollView = {
+    private lazy var lyricsScrollView: UIScrollView = {
         
         let viewToScroll: UIView = {
             
             let lyricsStackView: UIStackView = {
                 
-                let lyricsStackView = UIStackView()
-                lyricsStackView.backgroundColor = .red
+                var views = [UIView]()
+                
+                for paragraph in holyDiverLyrics {
+                    
+                    views.append(createView(paragraph))
+                }
+                
+                let lyricsStackView = UIStackView(arrangedSubviews: views)
+                lyricsStackView.axis = .vertical
+                
                 return lyricsStackView
             }()
             
             let viewToScroll = UIView()
             viewToScroll.addSubview(lyricsStackView)
-            viewToScroll.backgroundColor = .green
+            viewToScroll.backgroundColor = .white
             
-            lyricsStackView.constraintTo(by: .top, toItem: viewToScroll, 20)
-            lyricsStackView.constraintTo(by: .leading, toItem: viewToScroll, 20)
-            lyricsStackView.constraintTo(by: .trailing, toItem: viewToScroll, -20)
-            lyricsStackView.constraintTo(by: .height, toItem: viewToScroll, multiplier: 0.5)
+            lyricsStackView.constraintTo(by: .top, toItem: viewToScroll)
+            lyricsStackView.constraintTo(by: .leading, toItem: viewToScroll)
+            lyricsStackView.constraintTo(by: .trailing, toItem: viewToScroll)
+            lyricsStackView.constraintTo(by: .bottom, toItem: viewToScroll)
             
             return viewToScroll
         }()
@@ -105,7 +113,6 @@ class View: UIViewController {
         viewToScroll.constraintTo(by: .trailing, toItem: lyricsScrollView.contentLayoutGuide)
         viewToScroll.constraintTo(by: .bottom, toItem: lyricsScrollView.contentLayoutGuide)
         viewToScroll.constraintTo(by: .width, toItem: lyricsScrollView.frameLayoutGuide)
-        viewToScroll.constraintTo(by: .height, toItem: lyricsScrollView, multiplier: 5)
         
         return lyricsScrollView
     }()
@@ -130,6 +137,21 @@ class View: UIViewController {
     override var preferredStatusBarStyle: UIStatusBarStyle {
         
         .lightContent
+    }
+    
+    func createView(_ paragraph: String) -> UIView {
+        
+        let label = UILabel()
+        label.text = paragraph
+        label.textColor = .white
+        label.numberOfLines = 0
+        label.backgroundColor = .black
+        
+        let view = UIView()
+        view.addSubview(label)
+        label.fillSuperview(10)
+        
+        return view
     }
 }
 
