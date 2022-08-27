@@ -70,6 +70,7 @@ class View: UIViewController {
         
         let tigerView = UIImageView()
         tigerView.image = appImages.tiger
+        tigerView.clipsToBounds = true
         
         return tigerView
     }()
@@ -89,13 +90,14 @@ class View: UIViewController {
                 
                 let lyricsStackView = UIStackView(arrangedSubviews: views)
                 lyricsStackView.axis = .vertical
+                lyricsStackView.spacing = view.frame.size.width/20
                 
                 return lyricsStackView
             }()
             
             let viewToScroll = UIView()
             viewToScroll.addSubview(lyricsStackView)
-            viewToScroll.backgroundColor = .white
+            viewToScroll.layer.cornerRadius = view.frame.size.width/20
             
             lyricsStackView.constraintTo(by: .top, toItem: viewToScroll)
             lyricsStackView.constraintTo(by: .leading, toItem: viewToScroll)
@@ -119,7 +121,7 @@ class View: UIViewController {
 
     override func viewDidLoad() {
         
-        view.addSubViews([tigerView, lyricsScrollView])
+        view.addSubviews([tigerView, lyricsScrollView])
         
         super.viewDidLoad()
         
@@ -141,17 +143,36 @@ class View: UIViewController {
     
     func createView(_ paragraph: String) -> UIView {
         
+        let button = UIButton()
+        button.setImage(appImages.chevron, for: .normal)
+        
         let label = UILabel()
         label.text = paragraph
+        label.font = UIFont.systemFont(ofSize: view.frame.size.width/20,
+                                       weight: .bold)
         label.textColor = .white
         label.numberOfLines = 0
         label.backgroundColor = .black
         
         let view = UIView()
-        view.addSubview(label)
-        label.fillSuperview(10)
+        view.addSubviews([label, button])
+        label.fillSuperview()
+        
+        button.constraintTo(by: .top, toItem: view)
+        button.constraintTo(by: .trailing, toItem: view)
+        
+        button.addTarget(self, action: #selector(anyViewButton), for: .touchUpInside)
         
         return view
+    }
+    
+    @objc func anyViewButton(_ sender: UIButton) {
+        
+        guard let lyricsStackView = sender.superview?.superview as? UIStackView else {return}
+        
+        sender.superview?.removeFromSuperview()
+        
+        lyricsStackView.addArrangedSubview(sender.superview ?? UIView())
     }
 }
 
