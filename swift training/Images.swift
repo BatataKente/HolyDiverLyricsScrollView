@@ -11,5 +11,6 @@ struct appImages {
     
     static let tiger = UIImage(named: "0")
     static let skull = UIImage(named: "caveira")
-    static let chevron = UIImage(systemName: "chevron.left")
+    static let chevronLeft = UIImage(systemName: "chevron.left")
+    static let chevronRight = UIImage(systemName: "chevron.right")
 }

@@ -130,7 +130,7 @@ class View: UIViewController {
         tigerView.constraintTo(by: .trailing, toItem: view.safeAreaLayoutGuide)
         view.addConstraint(tigerView.heightAnchor.constraint(equalToConstant: view.frame.size.height/5))
         
-        lyricsScrollView.constraintTo(by: .top, toItem: tigerView, relation: .outside, 10)
+        lyricsScrollView.constraintTo(by: .top, toItem: tigerView, relation: .outside, 20)
         lyricsScrollView.constraintTo(by: .leading, toItem: view.safeAreaLayoutGuide, 10)
         lyricsScrollView.constraintTo(by: .trailing, toItem: view.safeAreaLayoutGuide, -10)
         lyricsScrollView.constraintTo(by: .bottom, toItem: view.safeAreaLayoutGuide)
@@ -144,7 +144,8 @@ class View: UIViewController {
     func createView(_ paragraph: String) -> UIView {
         
         let button = UIButton()
-        button.setImage(appImages.chevron, for: .normal)
+        button.setImage(appImages.chevronLeft, for: .normal)
+        button.setImage(appImages.chevronRight, for: .selected)
         
         let label = UILabel()
         label.text = paragraph
@@ -154,25 +155,36 @@ class View: UIViewController {
         label.numberOfLines = 0
         label.backgroundColor = .black
         
+        let labelStack = UIStackView(arrangedSubviews: [label])
+        
         let view = UIView()
-        view.addSubviews([label, button])
-        label.fillSuperview()
+        view.addSubviews([labelStack, button])
+        labelStack.fillSuperview()
         
         button.constraintTo(by: .top, toItem: view)
         button.constraintTo(by: .trailing, toItem: view)
+        button.constraintTo(by: .bottom, toItem: view)
         
-        button.addTarget(self, action: #selector(anyViewButton), for: .touchUpInside)
+        let handler = {(action: UIAction) in
+            
+            label.isHidden = !label.isHidden
+            button.isSelected = !button.isSelected
+        }
+        button.addAction(UIAction(handler: handler), for: .touchUpInside)
+//        button.addTarget(self, action: #selector(anyViewButton), for: .touchUpInside)
         
         return view
     }
     
-    @objc func anyViewButton(_ sender: UIButton) {
+//    @objc func anyViewButton(_ sender: UIButton) {
         
-        guard let lyricsStackView = sender.superview?.superview as? UIStackView else {return}
-        
-        sender.superview?.removeFromSuperview()
-        
-        lyricsStackView.addArrangedSubview(sender.superview ?? UIView())
-    }
+//        Esse codigo retira a view da stack e coloca de volta na stack
+//
+//        guard let lyricsStackView = sender.superview?.superview as? UIStackView else {return}
+//
+//        sender.superview?.removeFromSuperview()
+//
+//        lyricsStackView.addArrangedSubview(sender.superview ?? UIView())
+//    }
 }
 
